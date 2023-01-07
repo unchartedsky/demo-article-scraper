@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@extractus/article-extractor": "7.2.8-rc1",
     "@next/font": "13.1.1",
     "@types/node": "18.11.18",
     "@types/react": "18.0.26",
