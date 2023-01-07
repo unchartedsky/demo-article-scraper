@@ -20,5 +20,10 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "typescript": "4.9.4"
+  },
+  "devDependencies": {
+    "eslint-config-prettier": "^8.6.0",
+    "prettier": "^2.8.1",
+    "prettier-plugin-organize-imports": "^3.2.1"
   }
 }
