@@ -274,3 +274,9 @@
     transform: rotate(0deg);
   }
 }
+.domContainer {
+  border: 1px solid white;
+  margin-top: 16px;
+  min-width: 100%;
+  min-height: 256px;
+}

@@ -1,4 +1,4 @@
-import { Input } from 'antd';
+import { Input, Modal } from 'antd';
 import Head from 'next/head';
 import { useState } from 'react';
 import styles from '../styles/index.module.css';
@@ -6,11 +6,19 @@ import styles from '../styles/index.module.css';
 const Home = () => {
   const [htmlResult, setHtmlResult] = useState('');
 
-  const clickSearchButton = (value: string) => {
+  const clickSearchButton = (url: string) => {
+    try {
+      new URL(url);
+    } catch (error) {
+      Modal.error({
+        title: 'Error',
+        content: 'Invalid url...',
+      });
+    }
     fetch('/api/scrap', {
       method: 'POST',
       body: JSON.stringify({
-        url: value,
+        url,
       }),
       headers: {
         'Content-Type': 'application/json',
@@ -29,13 +37,13 @@ const Home = () => {
       </Head>
       <main className={styles.main}>
         <Input.Search
-          placeholder='input search text'
+          placeholder='Type full web address to scraping article.'
           allowClear
-          enterButton='Search'
+          enterButton='Scaping!'
           size='large'
           onSearch={clickSearchButton}
         />
-        <div dangerouslySetInnerHTML={{ __html: htmlResult }} />
+        <div className={styles.domContainer} dangerouslySetInnerHTML={{ __html: htmlResult }} />
       </main>
     </>
   );
