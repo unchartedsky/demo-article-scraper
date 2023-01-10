@@ -1,10 +1,11 @@
 import { Input, Modal } from 'antd';
+import DOMPurify from 'isomorphic-dompurify';
 import Head from 'next/head';
 import { useState } from 'react';
 import styles from '../styles/index.module.css';
 
 const Home = () => {
-  const [htmlResult, setHtmlResult] = useState('');
+  const [htmlResult, setHtmlResult] = useState('<div></div>');
 
   const clickSearchButton = (url: string) => {
     try {
@@ -28,6 +29,13 @@ const Home = () => {
       .then((result) => setHtmlResult(result.content));
   };
 
+  const ArticleScrap = () => {
+    const purifiedDom = DOMPurify.sanitize(htmlResult);
+    return (
+      <article className={styles.domContainer} dangerouslySetInnerHTML={{ __html: purifiedDom }} />
+    );
+  };
+
   return (
     <>
       <Head>
@@ -43,7 +51,7 @@ const Home = () => {
           size='large'
           onSearch={clickSearchButton}
         />
-        <div className={styles.domContainer} dangerouslySetInnerHTML={{ __html: htmlResult }} />
+        <ArticleScrap />
       </main>
     </>
   );
