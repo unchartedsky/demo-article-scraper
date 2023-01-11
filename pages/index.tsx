@@ -4,8 +4,21 @@ import Head from 'next/head';
 import { useState } from 'react';
 import styles from '../styles/index.module.css';
 
+type Article = {
+  url: string;
+  title: string;
+  description: string;
+  image: string;
+  author: string;
+  content: string;
+  published: string;
+  source: string; // original publisher
+  links: string[]; // list of alternative links
+  ttr: Number; // time to read in second, 0 = unknown
+};
+
 const Home = () => {
-  const [htmlResult, setHtmlResult] = useState('<div></div>');
+  const [article, setArticle] = useState<Article>();
 
   const clickSearchButton = (url: string) => {
     try {
@@ -26,13 +39,20 @@ const Home = () => {
       },
     })
       .then((response) => response.json().then((data) => data))
-      .then((result) => setHtmlResult(result.content));
+      .then((result) => setArticle(result));
   };
 
   const ArticleScrap = () => {
-    const purifiedDom = DOMPurify.sanitize(htmlResult);
+    const purifiedDom = (article && DOMPurify.sanitize(article.content)) || '<div></div>';
     return (
-      <article className={styles.domContainer} dangerouslySetInnerHTML={{ __html: purifiedDom }} />
+      <>
+        <h1>{article?.title || ''}</h1>
+        <span>{article?.published || ''}</span>
+        <br />
+        <span>{article?.author || ''}</span>
+        <div dangerouslySetInnerHTML={{ __html: purifiedDom }} />
+        <cite>{article?.url || ''}</cite>
+      </>
     );
   };
 
@@ -51,7 +71,9 @@ const Home = () => {
           size='large'
           onSearch={clickSearchButton}
         />
-        <ArticleScrap />
+        <article className={styles.domContainer}>
+          <ArticleScrap />
+        </article>
       </main>
     </>
   );
