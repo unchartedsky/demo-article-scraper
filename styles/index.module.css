@@ -278,6 +278,27 @@
   border: 1px solid white;
   margin-top: 16px;
   min-width: 100%;
-  min-height: 256px;
   padding: 16px;
+}
+
+.hide {
+  display: none;
+}
+
+.animatedTextContainer {
+  text-align: center;
+}
+
+.animatedTextContainer span {
+  display: inline-block;
+  font-size: 36px;
+  animation: flip 2s infinite;
+  animation-delay: calc(0.2s * var(--i));
+}
+
+@keyframes flip {
+  0%,
+  80% {
+    transform: rotateY(360deg);
+  }
 }

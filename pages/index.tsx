@@ -1,4 +1,5 @@
 import { Input, Modal } from 'antd';
+import clsx from 'clsx';
 import DOMPurify from 'isomorphic-dompurify';
 import Head from 'next/head';
 import { useState } from 'react';
@@ -19,7 +20,7 @@ type Article = {
 
 const Home = () => {
   const [article, setArticle] = useState<Article>();
-  const [isScrapButtonLoading, setIsScrapButtonLoading] = useState(false);
+  const [isStateLoading, setIsStateLoading] = useState(false);
 
   const clickSearchButton = (url: string) => {
     try {
@@ -30,7 +31,7 @@ const Home = () => {
         content: 'Invalid url...',
       });
     }
-    setIsScrapButtonLoading(true);
+    setIsStateLoading(true);
     fetch('/api/scrap', {
       method: 'POST',
       body: JSON.stringify({
@@ -52,20 +53,37 @@ const Home = () => {
       .catch((error) => {
         return Modal.error({ title: 'Error', content: error.message });
       })
-      .finally(() => setIsScrapButtonLoading(false));
+      .finally(() => setIsStateLoading(false));
   };
 
   const ArticleScrap = () => {
     const purifiedDom = (article && DOMPurify.sanitize(article.content)) || '<div></div>';
     return (
       <>
+        <AnimatedLoadingText loading={isStateLoading} />
+        <div className={styles.loadingContainer}></div>
         <h1>{article?.title || ''}</h1>
         <span>{article?.published || ''}</span>
         <br />
         <span>{article?.author || ''}</span>
-        <div dangerouslySetInnerHTML={{ __html: purifiedDom }} />
+        <div dangerouslySetInnerHTML={{ __html: purifiedDom }}></div>
         <cite>{article?.url || ''}</cite>
       </>
+    );
+  };
+
+  const AnimatedLoadingText = ({ loading }: { loading: boolean }) => {
+    const letters = 'LOADING...'.split('').map((text, index) => {
+      return (
+        <span key={index} style={{ animationDelay: `${0.2 * index}s` }}>
+          {text}
+        </span>
+      );
+    });
+    return (
+      <div className={clsx(styles.animatedTextContainer, !loading && styles.hide)}>
+        {...letters}
+      </div>
     );
   };
 
@@ -83,7 +101,7 @@ const Home = () => {
           enterButton='Scaping!'
           size='large'
           onSearch={clickSearchButton}
-          loading={isScrapButtonLoading}
+          loading={isStateLoading}
         />
         <article className={styles.domContainer}>
           <ArticleScrap />
