@@ -19,16 +19,18 @@ type Article = {
 
 const Home = () => {
   const [article, setArticle] = useState<Article>();
+  const [isScrapButtonLoading, setIsScrapButtonLoading] = useState(false);
 
   const clickSearchButton = (url: string) => {
     try {
       new URL(url);
     } catch (error) {
-      Modal.error({
+      return Modal.error({
         title: 'Error',
         content: 'Invalid url...',
       });
     }
+    setIsScrapButtonLoading(true);
     fetch('/api/scrap', {
       method: 'POST',
       body: JSON.stringify({
@@ -38,8 +40,19 @@ const Home = () => {
         'Content-Type': 'application/json',
       },
     })
-      .then((response) => response.json().then((data) => data))
-      .then((result) => setArticle(result));
+      .then((response) =>
+        response.json().then((data) => {
+          if (data == null) {
+            throw new Error("Can't read article.");
+          }
+          return data;
+        }),
+      )
+      .then((result) => setArticle(result))
+      .catch((error) => {
+        return Modal.error({ title: 'Error', content: error.message });
+      })
+      .finally(() => setIsScrapButtonLoading(false));
   };
 
   const ArticleScrap = () => {
@@ -70,6 +83,7 @@ const Home = () => {
           enterButton='Scaping!'
           size='large'
           onSearch={clickSearchButton}
+          loading={isScrapButtonLoading}
         />
         <article className={styles.domContainer}>
           <ArticleScrap />

@@ -1,4 +1,9 @@
-@import 'antd/dist/reset.css';
+/** Antd, Block transition */
+*,
+*::before,
+*::after {
+  transition: none !important;
+}
 
 :root {
   --max-width: 1100px;

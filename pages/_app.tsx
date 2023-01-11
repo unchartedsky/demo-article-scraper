@@ -1,4 +1,5 @@
 import { ConfigProvider, theme } from 'antd';
+import 'antd/dist/reset.css';
 import type { AppProps } from 'next/app';
 import '../styles/globals.css';
 
