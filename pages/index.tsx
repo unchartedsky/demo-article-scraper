@@ -1,6 +1,7 @@
-import { Input, Modal } from 'antd';
+import { Modal } from 'antd';
 import clsx from 'clsx';
 import DOMPurify from 'isomorphic-dompurify';
+import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useState } from 'react';
 import styles from '../styles/index.module.css';
@@ -17,6 +18,8 @@ type Article = {
   links: string[]; // list of alternative links
   ttr: Number; // time to read in second, 0 = unknown
 };
+
+const InputUrl = dynamic(() => import('../components/input-url'), { ssr: false });
 
 const Home = () => {
   const [article, setArticle] = useState<Article>();
@@ -95,14 +98,7 @@ const Home = () => {
         <meta name='viewport' content='width=device-width, initial-scale=1' />
       </Head>
       <main className={styles.main}>
-        <Input.Search
-          placeholder='Type full web address to scraping article.'
-          allowClear
-          enterButton='Scaping!'
-          size='large'
-          onSearch={clickSearchButton}
-          loading={isStateLoading}
-        />
+        <InputUrl onSearch={clickSearchButton} loading={isStateLoading} />
         <article className={styles.domContainer}>
           <ArticleScrap />
         </article>
